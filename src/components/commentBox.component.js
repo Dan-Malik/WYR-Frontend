@@ -7,13 +7,44 @@ import { authService } from '../services/authService';
 
 class CommentBox extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
             currentUser: null,
             commentData: this.props.comments,
-            commentFormData: ""
+            questionId: this.props.questionId,
+            commentFieldData: ""
+        }
+
+    }
+
+    handleCommentFieldChange(event) {
+        this.setState({ commentFieldData: event.target.value });
+    }
+
+
+    submitCommentButton(event) {
+        event.preventDefault();
+
+        if (localStorage.getItem('currentUser')) {
+
+            let userData =  JSON.parse(localStorage.getItem('currentUser')).data.new_user;
+
+            axios.post(`${process.env.REACT_APP_BACKEND_IP}/api/question/${this.state.questionId}/comment`, {
+                postedUser: userData.id,
+                postedUserName: userData.username,
+                content: this.state.commentFieldData
+            }).then((newComment)=>{
+
+                this.setState({commentData: [...this.props.comments, newComment] })
+
+            }).catch((err)=>{
+                console.log(err);
+            });
+
+        } else {
+            console.log("Please log in to comment!")
         }
 
     }
@@ -27,35 +58,33 @@ class CommentBox extends Component {
                     <div>
                         <h5>
                             {"Join the discussion:"}
-                           </h5>
-                            
-                           <textarea className="form-control" placeholder="Write a comment..." rows="3"></textarea>
+                        </h5>
 
-<div>
-<Button variant="warning" block>Post</Button>
-</div>
+                        <textarea className="form-control" placeholder="Write a comment..." rows="3" onChange={this.handleCommentFieldChange.bind(this)}></textarea>
+
+                        <div>
+                            <Button variant="warning" block onClick={this.submitCommentButton.bind(this)} >Post</Button>
+                        </div>
 
                         <div className="overflow-auto">
-{/* 
-regrettably set height with pixels - still looks good on most screens but not exactly a responsive solution */}
-                                <ul className="list-group">
+                            <ul className="list-group">
 
-                                    {
-                                        this.state.commentData ? this.state.commentData.map(commentObj => <li className="list-group-item">
+                                {
+                                    this.state.commentData ? this.state.commentData.map(commentObj => <li className="list-group-item">
                                         <div className="d-flex justify-content-between">
 
-                                    <b className="text-success">{commentObj.postedUserName}</b>
-                                    <small className="text-muted">{new Date(commentObj.datePosted).toLocaleDateString(undefined)}</small>
+                                            <b className="text-success">{commentObj.postedUserName}</b>
+                                            <small className="text-muted">{new Date(commentObj.datePosted).toLocaleDateString(undefined)}</small>
 
-                                                </div>
-                                    <p>{commentObj.content}</p>
-                                        
+                                        </div>
+                                        <p>{commentObj.content}</p>
+
                                     </li>
-                                    
-                                ) : ""
-                                    }
 
-                                </ul>
+                                    ) : ""
+                                }
+
+                            </ul>
 
                         </div>
                     </div>

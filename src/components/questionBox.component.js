@@ -35,8 +35,11 @@ class QuestionBox extends Component {
                 if (!response.data) {
                     console.log(response.data);
                     this.setState({ questionData: null });
+                    this.props.history.push("/");
+
                 } else {
-                    this.setState({ questionData: response.data.questionData });
+                    console.log(response.data)
+                    this.setState({questionData: response.data.questionData });
                     this.setState({commentData: response.data.comments});
 
                 }
@@ -45,6 +48,8 @@ class QuestionBox extends Component {
             (err) => {
                 console.log(err);
                 this.setState({ questionData: null });
+                this.props.history.push("/");
+
             }
         );
     }
@@ -82,10 +87,6 @@ class QuestionBox extends Component {
             ///////////////
 
             let commentsArray = this.state.commentData;
-
-            console.log("%%%%%%%%%%");
-            console.log(commentsArray);
-            console.log("%%%%%%%%%%");
 
             ////////////////////
             //If not logged in//
@@ -141,7 +142,7 @@ class QuestionBox extends Component {
 
                     <Col className="p-4" md={6}>
 
-                    {commentsArray? <CommentBox comments={commentsArray}/>:""}
+                    {commentsArray? <CommentBox comments={commentsArray} questionId={this.props.match.params.id}/>:""}
 
                     </Col>
 
@@ -262,7 +263,7 @@ class QuestionBox extends Component {
 
                 <Col className="p-4" md={6}>
 
-                    {commentsArray? <CommentBox comments={commentsArray}/>:""}
+                    {commentsArray? <CommentBox comments={commentsArray} questionId={this.props.match.params.id}/>:""}
 
                 </Col>
 

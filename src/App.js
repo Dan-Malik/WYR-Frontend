@@ -7,6 +7,7 @@ import Navbar from './components/navigationBar.component';
 import QuestionBox from './components/questionBox.component';
 import LoginPage from './components/loginPage.component';
 import SignUpPage from './components/signUpPage.component';
+import RandomPage from './components/randomPage.component';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
   <Route exact path="/question/id/:id" component={QuestionBox}/>
   <Route exact path="/login" component={LoginPage}/>
   <Route exact path="/signup" component={SignUpPage}/>
+  <Route exact path='/random' component={RandomPage}/>
 </Switch>
 </Router>
 

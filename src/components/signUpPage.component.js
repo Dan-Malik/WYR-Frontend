@@ -50,7 +50,7 @@ class SignUpPage extends React.Component {
             password: this.state.formPwd
         }).then((response)=>{
             console.log(response);
-            this.setState({outputMsg: response})
+            this.setState({outputMsg: "Something went wrong!"})
             this.props.history.push("/");
 
         }).catch((err)=>{
@@ -87,7 +87,7 @@ class SignUpPage extends React.Component {
                 <Col></Col>
                 <Col className="p-4" md={6}>
 
-        { typeof(this.state.outputMsg) == "object" ? this.state.outputMsg.map(msg => <h5>{msg}</h5>): "" }
+        { typeof(this.state.outputMsg) == "object" ? this.state.outputMsg.map(msg => <h5>{msg}</h5>): this.state.outputMsg }
 
                     <Form>
                         <Form.Group controlId="signUpEmailField">

@@ -34,6 +34,8 @@ class CommentBox extends Component {
 
         if (localStorage.getItem('currentUser')) {
 
+            if(this.state.commentFieldData.length > 8 && this.state.commentFieldData.length <280){
+
             let userData =  JSON.parse(localStorage.getItem('currentUser')).data.new_user;
 
             axios.post(`${process.env.REACT_APP_BACKEND_IP}/api/question/${this.state.questionId}/comment`, {
@@ -53,11 +55,25 @@ class CommentBox extends Component {
 
             }).catch((err)=>{
                 console.log(err);
+
+                if(err.response.status === 401){
+                    authService.logout();
+                }
             });
 
         } else {
+
+            //Output needs to be html to user
+            console.log("Comment must be between 8 and 280 characters!")
+        }
+
+        } else {
+
+            //Output needs to be html to user
             console.log("Please log in to comment!")
         }
+
+
 
     }
 

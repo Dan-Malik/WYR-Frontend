@@ -64,6 +64,10 @@ class CreateQuestion extends React.Component {
 
             console.log(err);
 
+            if(err.response.status===401){
+                authService.logout();
+            }
+
         });
 
 

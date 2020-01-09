@@ -19,6 +19,11 @@ class CommentBox extends Component {
 
     }
 
+    componentDidMount() {
+
+        authService.currentUser.subscribe(userData => this.setState({ currentUser: userData }))
+    }
+
     handleCommentFieldChange(event) {
         this.setState({ commentFieldData: event.target.value });
     }
@@ -35,9 +40,16 @@ class CommentBox extends Component {
                 postedUser: userData.id,
                 postedUserName: userData.username,
                 content: this.state.commentFieldData
+            },{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-token': this.state.currentUser.data.token
+                }
             }).then((newComment)=>{
 
-                this.setState({commentData: [...this.props.comments, newComment] })
+                console.log([...this.props.comments, newComment.data]);
+
+                this.setState({commentData: [...this.props.comments, newComment.data] })
 
             }).catch((err)=>{
                 console.log(err);
@@ -57,7 +69,7 @@ class CommentBox extends Component {
                 <Col>
                     <div>
                         <h5>
-                            {"Join the discussion:"}
+                            Join the discussion:
                         </h5>
 
                         <textarea className="form-control" placeholder="Write a comment..." rows="3" onChange={this.handleCommentFieldChange.bind(this)}></textarea>

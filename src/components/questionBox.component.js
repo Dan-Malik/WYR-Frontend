@@ -33,6 +33,7 @@ class QuestionBox extends Component {
             (response) => {
 
                 if (!response.data) {
+                    //If question doesn't exist
                     console.log(response.data);
                     this.setState({ questionData: null });
                     this.props.history.push("/");
@@ -173,20 +174,32 @@ class QuestionBox extends Component {
                 event.preventDefault();
 
                 if (!this.state.questionData.votesA.includes(this.state.currentUser.data.new_user.id)) {
+
                     axios.post(`${process.env.REACT_APP_BACKEND_IP}/api/question/${this.state.questionData._id}/vote`, {
                         userId: this.state.currentUser.data.new_user.id,
                         voteA: true,
                         unvote: false
-                    }).then((response) => {
+                    }
+                    ,{
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': this.state.currentUser.data.token
+                        }
+                    }
+                    ).then((response) => {
                         console.log(response);
                         this.setState({questionData : response.data})
-
                     }).catch((err) => {
-                        console.log(err);
-                    });
-                }
-            }
 
+                        if(err.response.status===401){
+                            authService.logout();
+                        }
+
+                    });
+
+                }
+
+            }
 
             let handleVoteB = (event) => {
                 event.preventDefault();
@@ -196,12 +209,22 @@ class QuestionBox extends Component {
                         userId: this.state.currentUser.data.new_user.id,
                         voteA: false,
                         unvote: false
+                    },{
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': this.state.currentUser.data.token
+                        }
                     }).then((response) => {
                         console.log(response);
                         this.setState({questionData : response.data})
 
                     }).catch((err) => {
-                        console.log(err);
+
+
+                        if(err.response.status===401){
+                            authService.logout();
+                        }                        
+                        
                     });
                 }
             }
